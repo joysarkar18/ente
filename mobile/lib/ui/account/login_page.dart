@@ -11,6 +11,7 @@ import 'package:photos/services/user_service.dart';
 import "package:photos/ui/account/login_pwd_verification_page.dart";
 import 'package:photos/ui/common/dynamic_fab.dart';
 import 'package:photos/ui/common/web_page.dart';
+import "package:photos/utils/dialog_util.dart";
 import "package:styled_text/styled_text.dart";
 
 class LoginPage extends StatefulWidget {
@@ -68,6 +69,12 @@ class _LoginPageState extends State<LoginPage> {
         isFormValid: _emailIsValid,
         buttonText: S.of(context).logInLabel,
         onPressedFunction: () async {
+          final dialog = createProgressDialog(
+            context,
+            S.of(context).pleaseWait,
+            isDismissible: true,
+          );
+          await dialog.show();
           await UserService.instance.setEmail(_email!);
           Configuration.instance.resetVolatilePassword();
           SrpAttributes? attr;
@@ -81,6 +88,7 @@ class _LoginPageState extends State<LoginPage> {
             }
           }
           if (attr != null && !isEmailVerificationEnabled) {
+            await dialog.hide();
             // ignore: unawaited_futures
             Navigator.of(context).push(
               MaterialPageRoute(
@@ -92,6 +100,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
             );
           } else {
+            await dialog.hide();
             await UserService.instance
                 .sendOtt(context, _email!, isCreateAccountScreen: false);
           }
