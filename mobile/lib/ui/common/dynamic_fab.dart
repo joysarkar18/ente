@@ -8,6 +8,7 @@ class DynamicFAB extends StatelessWidget {
   final bool? isFormValid;
   final String? buttonText;
   final Function? onPressedFunction;
+  final bool? enable;
 
   const DynamicFAB({
     Key? key,
@@ -15,6 +16,7 @@ class DynamicFAB extends StatelessWidget {
     this.buttonText,
     this.isFormValid,
     this.onPressedFunction,
+    this.enable,
   }) : super(key: key);
 
   @override
@@ -41,7 +43,7 @@ class DynamicFAB extends StatelessWidget {
                   Theme.of(context).colorScheme.dynamicFABBackgroundColor,
               foregroundColor:
                   Theme.of(context).colorScheme.dynamicFABTextColor,
-              onPressed: isFormValid!
+              onPressed: isFormValid! && enable!
                   ? onPressedFunction as void Function()?
                   : () {
                       FocusScope.of(context).unfocus();
@@ -62,8 +64,9 @@ class DynamicFAB extends StatelessWidget {
         width: double.infinity,
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: OutlinedButton(
-          onPressed:
-              isFormValid! ? onPressedFunction as void Function()? : null,
+          onPressed: isFormValid! && enable!
+              ? onPressedFunction as void Function()?
+              : null,
           child: Text(buttonText!),
         ),
       );

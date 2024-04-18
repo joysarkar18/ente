@@ -93,7 +93,7 @@ class UserService {
     await dialog.show();
     try {
       final response = await _dio.post(
-        _config.getHttpEndpoint() + "/users/ott",
+        _config.getHttpEndpoint() + "/users/ot",
         data: {"email": email, "purpose": isChangeEmail ? "change" : ""},
       );
       await dialog.hide();

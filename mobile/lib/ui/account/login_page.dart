@@ -25,6 +25,7 @@ class _LoginPageState extends State<LoginPage> {
   bool _emailIsValid = false;
   String? _email;
   Color? _emailInputFieldColor;
+  bool _isEnable = true;
   final Logger _logger = Logger('_LoginPageState');
 
   @override
@@ -64,10 +65,15 @@ class _LoginPageState extends State<LoginPage> {
       body: _getBody(),
       floatingActionButton: DynamicFAB(
         key: const ValueKey("logInButton"),
+        enable: _isEnable,
         isKeypadOpen: isKeypadOpen,
         isFormValid: _emailIsValid,
         buttonText: S.of(context).logInLabel,
         onPressedFunction: () async {
+          setState(() {
+            _isEnable = false;
+          });
+
           await UserService.instance.setEmail(_email!);
           Configuration.instance.resetVolatilePassword();
           SrpAttributes? attr;
@@ -95,6 +101,7 @@ class _LoginPageState extends State<LoginPage> {
             await UserService.instance
                 .sendOtt(context, _email!, isCreateAccountScreen: false);
           }
+          _isEnable = true;
           FocusScope.of(context).unfocus();
         },
       ),
